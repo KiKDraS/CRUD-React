@@ -1,23 +1,24 @@
 import './App.css';
 import {Title} from './components/Title';
 import {SearchForm} from './components/SearchForm';
+import {MoviesList} from './components/MoviesList'
 import 'bulma/css/bulma.css';
 import { Component } from 'react';
 
 class App extends Component {
   state ={
-    results: []
+    results: [],
+    usedSearch: false
   }
 
   handleResults = (results) =>{
-    this.setState({results})
+    this.setState({results, usedSearch: true})
   }
 
-  renderResults () {
-    const {results} = this.state
-    return results.map(movie =>{
-      return <p key={movie.imdbID}>{movie.Title}</p>
-    })
+  renderResults(){
+    return this.state.results.length === 0
+            ? <p>Sorry! Results not found!</p>
+            : <MoviesList movies={this.state.results} />
   }
 
   render(){
@@ -27,9 +28,10 @@ class App extends Component {
         <div className='SearchForm-wrapper'> 
           <SearchForm onResults={this.handleResults}/>
         </div>
-        {this.state.results.length === 0
-          ? <p>Sin resultados</p>
-          : this.renderResults()
+        {
+          this.state.usedSearch === true
+            ? this.renderResults()
+            : <small>Use the form to seach a movie</small>
         }
       </div>
     )
